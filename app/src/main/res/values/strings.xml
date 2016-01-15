@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PotholeDetectorApplication</string>
+    <string name="title_activity_display_potholes">Map</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_show_location">ShowLocationActivity</string>
+    <string name="title_activity_maps">MapsActivity</string>
+</resources>
