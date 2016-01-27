@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity
                     case(BluetoothAdapter.STATE_TURNING_ON):
                     {
                         toastText="Bluetooth turning on";
-                        Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
+                       //Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
                         break;
                     }
                     case(BluetoothAdapter.STATE_TURNING_OFF):

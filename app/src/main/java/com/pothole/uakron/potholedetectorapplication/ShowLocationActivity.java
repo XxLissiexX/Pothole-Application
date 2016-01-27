@@ -8,7 +8,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.BufferedWriter;
@@ -19,12 +21,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class ShowLocationActivity extends Activity implements LocationListener {
+public class ShowLocationActivity extends Activity implements LocationListener
+{
     private TextView latituteField;
     private TextView longitudeField;
+    private Button Potholebutton;
     private LocationManager locationManager;
     private String provider;
     File pothole_txt_file;
+    public boolean TIMESTAMP_RECIEVED = false; //init the variable to false
 
     /** Called when the activity is first created. */
 
@@ -55,6 +60,7 @@ public class ShowLocationActivity extends Activity implements LocationListener {
         latituteField = (TextView) findViewById(R.id.TextView02);
         longitudeField = (TextView) findViewById(R.id.TextView04);
 
+
         // Get the location manager
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         // Define the criteria how to select the locatioin provider -> use
@@ -78,6 +84,11 @@ public class ShowLocationActivity extends Activity implements LocationListener {
 
 
     }
+    public void potholeFound(View view)
+    {
+        TIMESTAMP_RECIEVED=true;
+    }
+
 
     /* Request updates at startup */
     @Override
@@ -98,25 +109,35 @@ public class ShowLocationActivity extends Activity implements LocationListener {
     @Override
     public void onLocationChanged(Location location)
     {
-        double lat =  location.getLatitude();
-        double lng = location.getLongitude();
-        latituteField.setText(String.valueOf(lat));
-        longitudeField.setText(String.valueOf(lng));
 
-        try
+        //listen to bluetooth for a signal.
+        //right now we could use the press of a button.
+
+
+        if(TIMESTAMP_RECIEVED)
         {
-            Calendar c = Calendar.getInstance();
-            int hours = c.get(Calendar.HOUR);
-            int minute = c.get(Calendar.MINUTE);
-            int seconds = c.get(Calendar.SECOND);
-            BufferedWriter buf =new BufferedWriter(new FileWriter(pothole_txt_file, true));
-            buf.append("Latitude: "+ String.valueOf(lat) + " Longitude: " +String.valueOf(lng) + " Time: " +hours+ ":" + minute +":"+seconds);
-            buf.newLine();
-            buf.close();
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
+
+            //if we get a timestamp, we will log this location to the file.
+
+            double lat = location.getLatitude();
+            double lng = location.getLongitude();
+            latituteField.setText(String.valueOf(lat));
+            longitudeField.setText(String.valueOf(lng));
+
+            try {
+                Calendar c = Calendar.getInstance();
+                int hours = c.get(Calendar.HOUR);
+                int minute = c.get(Calendar.MINUTE);
+                int seconds = c.get(Calendar.SECOND);
+                BufferedWriter buf = new BufferedWriter(new FileWriter(pothole_txt_file, true));
+                buf.append("Latitude: " + String.valueOf(lat) + " Longitude: " + String.valueOf(lng) + " Time: " + hours + ":" + minute + ":" + seconds);
+                buf.newLine();
+                buf.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            TIMESTAMP_RECIEVED =false;
         }
 
     }
